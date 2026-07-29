@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: raw-platform-api
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+
+  - type: web
+    name: raw-platform-web
+    env: node
+    buildCommand: cd client && npm install && npm run build
+    startCommand: cd client && npm start
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://raw-platform-api.onrender.com/api
+
+databases:
+  - name: raw-db
+    engine: postgres
+    version: 12
