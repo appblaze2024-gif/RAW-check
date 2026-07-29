@@ -7,7 +7,7 @@
     "NEXT_PUBLIC_API_URL": {
       "description": "Backend API URL",
       "required": true,
-      "default": "http://localhost:5000/api"
+      "default": "https://raw-platform-api.onrender.com/api"
     }
   }
 }
