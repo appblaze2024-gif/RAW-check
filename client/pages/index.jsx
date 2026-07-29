@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { FiGitBranch, FiDrone, FiBook, FiUsers, FiCheckSquare, FiFileText } from 'react-icons/fi';
 import Layout from '../components/Layout';
 
 export default function Home() {
@@ -8,6 +7,7 @@ export default function Home() {
     uavs: 0,
     users: 0,
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
@@ -15,10 +15,12 @@ export default function Home() {
 
   const fetchStats = async () => {
     try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://raw-platform-api.onrender.com/api';
+
       const [questionsRes, uavRes, usersRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/questions`),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/uav`),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`),
+        fetch(`${apiUrl}/questions`).catch(() => ({ json: () => [] })),
+        fetch(`${apiUrl}/uav`).catch(() => ({ json: () => [] })),
+        fetch(`${apiUrl}/users`).catch(() => ({ json: () => [] })),
       ]);
 
       const questions = await questionsRes.json();
@@ -26,49 +28,46 @@ export default function Home() {
       const users = await usersRes.json();
 
       setStats({
-        questions: questions.length,
-        uavs: uavs.length,
-        users: users.length,
+        questions: Array.isArray(questions) ? questions.length : 0,
+        uavs: Array.isArray(uavs) ? uavs.length : 0,
+        users: Array.isArray(users) ? users.length : 0,
       });
     } catch (error) {
       console.error('Fout bij het laden van statistieken:', error);
+      setStats({ questions: 0, uavs: 0, users: 0 });
+    } finally {
+      setLoading(false);
     }
   };
 
   const features = [
     {
-      icon: FiBook,
-      title: 'RAW Vragen',
+      title: '📋 RAW Vragen',
       description: 'Stel vragen over RAW systematiek en ontvang gedetailleerde antwoorden',
       link: '/questions'
     },
     {
-      icon: FiDrone,
-      title: 'UAV Database',
+      title: '🚁 UAV Database',
       description: 'Uitgebreide database met UAV specificaties en mogelijkheden',
       link: '/uav'
     },
     {
-      icon: FiGitBranch,
-      title: 'Knowledge Base',
+      title: '📚 Knowledge Base',
       description: 'Gecontroleerde kennisbank met RAW systematiek informatie',
       link: '/knowledge-base'
     },
     {
-      icon: FiCheckSquare,
-      title: 'Checklists',
+      title: '✅ Checklists',
       description: 'Downloadbare checklists voor RAW activiteiten',
       link: '/checklists'
     },
     {
-      icon: FiFileText,
-      title: 'Compliance',
+      title: '⚖️ Compliance',
       description: 'Regelgeving en compliance informatie per jurisdictie',
       link: '/compliance'
     },
     {
-      icon: FiUsers,
-      title: 'Community Forum',
+      title: '💬 Community Forum',
       description: 'Discussie en uitwisseling met andere RAW professionals',
       link: '/forum'
     },
@@ -110,20 +109,17 @@ export default function Home() {
               Onderdelen van het Platform
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {features.map((feature, index) => {
-                const Icon = feature.icon;
-                return (
-                  <a
-                    key={index}
-                    href={feature.link}
-                    className="bg-slate-800 rounded-lg p-6 hover:bg-slate-700 transition cursor-pointer border border-slate-700"
-                  >
-                    <Icon className="w-12 h-12 text-blue-400 mb-4" />
-                    <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-                    <p className="text-slate-300">{feature.description}</p>
-                  </a>
-                );
-              })}
+              {features.map((feature, index) => (
+                <a
+                  key={index}
+                  href={feature.link}
+                  className="bg-slate-800 rounded-lg p-6 hover:bg-slate-700 transition cursor-pointer border border-slate-700"
+                >
+                  <h3 className="text-2xl mb-4">{feature.title.split(' ')[0]}</h3>
+                  <h3 className="text-xl font-bold text-white mb-2">{feature.title.slice(2)}</h3>
+                  <p className="text-slate-300">{feature.description}</p>
+                </a>
+              ))}
             </div>
           </div>
         </section>

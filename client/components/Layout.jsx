@@ -1,7 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { FiMenu, FiX, FiGitBranch } from 'react-icons/fi';
-import { useState } from 'react';
 
 export default function Layout({ children }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +19,7 @@ export default function Layout({ children }) {
       <header className="bg-slate-900 border-b border-slate-800">
         <nav className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center space-x-2">
-            <FiGitBranch className="w-8 h-8 text-blue-400" />
+            <span className="text-2xl">🚁</span>
             <span className="text-xl font-bold text-white">RAW Platform</span>
           </Link>
 
@@ -41,9 +39,9 @@ export default function Layout({ children }) {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-slate-300"
+            className="md:hidden text-slate-300 text-2xl"
           >
-            {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+            {isOpen ? '✕' : '☰'}
           </button>
         </nav>
 
