@@ -1,0 +1,16 @@
+server/
+.env.production
+.env.example
+DEPLOYMENT.md
+DEPLOY_NOW.md
+SETUP.md
+API.md
+README.md
+PLATFORM_OVERZICHT.md
+LIVE_URLS.md
+Dockerfile
+render.yaml
+*.md
+.git
+.gitignore
+node_modules/
